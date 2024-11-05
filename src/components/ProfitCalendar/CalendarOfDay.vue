@@ -6,7 +6,7 @@
         <div class="day_list_wrapper">
             <div class="day_item" :class="[item.hidden ? 'hidden': '' , getDayItemClass(item), item.isOutOfNow ? 'outOfNow' : '']" v-for="item in dayList" :key="item.key">
                 <div class="title">{{ item.title }}</div>
-                <div class="profit">{{ !item.isOutOfNow ? getPriceType(item.profit) + formatPrice(item.profit) : '' }}</div>
+                <div class="profit" v-if="!item.isOutOfNow">{{ !item.isOutOfNow ? getPriceType(item.profit) + formatPrice(item.profit) : '' }}</div>
             </div>
         </div>
     </div>
@@ -134,8 +134,8 @@ export default {
                 color: #3a987a;
             }
         }
-        &.outOfNow {
-            background-color: #fff;   
+        &.outOfNow, &.grey {
+            background-color: #f5f5f5;
         }
     }
     .day_item.hidden {

@@ -319,7 +319,7 @@ export default {
 
 <style lang="scss">
 .profit_calendar {
-    height: 10rem;
+    height: 10.5rem;
     border-radius: 0.4rem;
     background-color: #fff;
     padding: 0.2rem;
