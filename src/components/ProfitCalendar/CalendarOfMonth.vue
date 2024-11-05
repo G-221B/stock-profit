@@ -3,13 +3,15 @@
         <div class="month_list">
             <div class="month_item" :class="[getMonthItemClass(item)]" v-for="item in monthList" :key="item.title">
                 <div class="title">{{ item.title }}</div>
-                <div class="profit">{{ getPriceType(item.profit) + item.profit.toFixed(2) }}</div>
+                <div class="profit">{{ getPriceType(item.profit) + item.profit.toFixed(2) + profitSymbol }}</div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import { PROFIT_TYPE } from '../../utils/constants';
+
 export default {
     props: {
         currentYear: {
@@ -20,7 +22,13 @@ export default {
         },
         profitData: {
             default: () => []
-        }
+        },
+        profitType: {
+            default: () => PROFIT_TYPE.PRICE
+        },
+        profitSymbol: {
+            default: () => ''
+        },
     },
     data() {
         return {
@@ -64,7 +72,7 @@ export default {
                 }
                 monthList.push({
                     title,
-                    profit: this.profitData[i - 1]?.profit || 0
+                    profit: this.profitType === PROFIT_TYPE.PRICE ? (this.profitData[i - 1]?.profit || 0) : (this.profitData[i - 1]?.ratio || 0)
                 })
             }
             return monthList;

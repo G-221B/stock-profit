@@ -3,7 +3,7 @@
         <div class="week_list">
             <div class="week_item" :class="[getDayItemClass(item), item.isOutOfNow ? 'outof_item' : '']" v-for="(item,index) in weekList" :key="index + item.key">
                 <div class="title">{{ item.title }}</div>
-                <div class="profit" v-if="!item.isOutOfNow">{{ getPriceType(item.profit) +  item.profit.toFixed(2) }}</div>
+                <div class="profit" v-if="!item.isOutOfNow">{{ getPriceType(item.profit) +  item.profit.toFixed(2) + profitSymbol }}</div>
             </div>
         </div>
     </div>
@@ -11,6 +11,7 @@
 
 <script>
 import { getDaysInMonth, isDateInRange, isDateOutOfTargetDay} from '../../utils/index';
+import { PROFIT_TYPE } from '../../utils/constants';
 
 export default {
     props: {
@@ -22,7 +23,13 @@ export default {
         },
         profitData: {
             default: () => []
-        }
+        },
+        profitType: {
+            default: () => PROFIT_TYPE.PRICE
+        },
+        profitSymbol: {
+            default: () => ''
+        },
     },
     data() {
         return {}
@@ -54,7 +61,7 @@ export default {
             let size = 0;
             for(let i = 0; i < this.profitData.length; i++) {
                 size++;
-                curWeekProfit += Number(this.profitData[i]?.profit || 0);
+                curWeekProfit += Number(this.profitType === PROFIT_TYPE.PRICE ? (this.profitData[i]?.profit || 0) : (this.profitData[i]?.ratio || 0) );
                 if(size === 7 || i === this.profitData.length - 1) {
                     weekProfitList.push(curWeekProfit);
                     size = 0;

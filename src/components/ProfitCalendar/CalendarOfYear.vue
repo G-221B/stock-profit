@@ -3,13 +3,15 @@
         <div class="year_list">
             <div class="year_item" :class="[getYearItemClass(item)]" v-for="item in yearList" :key="item.title">
                 <div class="title">{{ item.title }}</div>
-                <div class="profit">{{ getPriceType(item.profit) + item.profit.toFixed(2) }}</div>
+                <div class="profit">{{ getPriceType(item.profit) + item.profit.toFixed(2) + profitSymbol }}</div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import { PROFIT_TYPE } from '../../utils/constants';
+
 export default {
     props: {
         currentYear: {
@@ -20,7 +22,13 @@ export default {
         },
         profitData: {
             default: () => []
-        }
+        },
+        profitType: {
+            default: () => PROFIT_TYPE.PRICE
+        },
+        profitSymbol: {
+            default: () => ''
+        },
     },
     data() {
         return {
@@ -62,7 +70,7 @@ export default {
                 }
                 yearList.push({
                     title,
-                    profit: this.profitData[profitIndex++]?.profit || 0
+                    profit: this.profitType === PROFIT_TYPE.PRICE ? (this.profitData[profitIndex++]?.profit || 0) : (this.profitData[profitIndex++]?.ratio || 0),
                 })
             }
             return yearList;

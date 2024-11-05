@@ -6,7 +6,7 @@
         <div class="day_list_wrapper">
             <div class="day_item" :class="[item.hidden ? 'hidden': '' , getDayItemClass(item), item.isOutOfNow ? 'outOfNow' : '']" v-for="item in dayList" :key="item.key">
                 <div class="title">{{ item.title }}</div>
-                <div class="profit" v-if="!item.isOutOfNow">{{ !item.isOutOfNow ? getPriceType(item.profit) + formatPrice(item.profit) : '' }}</div>
+                <div class="profit" v-if="!item.isOutOfNow">{{ getPriceType(item.profit) + formatPrice(item.profit) + profitSymbol }}</div>
             </div>
         </div>
     </div>
@@ -14,6 +14,7 @@
 
 <script>
 import { getWeekday, getDaysInMonth, formatPrice, isDateOutOfTargetDay, isToday } from '../../utils/index';
+import { PROFIT_TYPE } from '../../utils/constants';
 
 export default {
     props: {
@@ -25,7 +26,13 @@ export default {
         },
         profitData: {
             default: () => []
-        }
+        },
+        profitType: {
+            default: () => PROFIT_TYPE.PRICE
+        },
+        profitSymbol: {
+            default: () => ''
+        },
     },
     data() {
         return {
@@ -75,7 +82,7 @@ export default {
 
                 dayList.push({
                     title,
-                    profit: this.profitData[i]?.profit || 0,
+                    profit: this.profitType === PROFIT_TYPE.PRICE ? (this.profitData[i]?.profit || 0) : (this.profitData[i]?.ratio || 0),
                     key: i + 1 + 'val',
                     isOutOfNow: isDateOutOfTargetDay(this.currentYear, this.currentMonth, i+1) || isToday(this.currentYear, this.currentMonth, i+1)
                 })

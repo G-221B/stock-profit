@@ -10,6 +10,18 @@
                 @click="changeTab(item)"
             >{{ item.label }}</div>
         </div>
+        <div class="profit_type_wrapper">
+            <div class="profit_type_switch">
+                <div 
+                    class="type_item" 
+                    :class="{active_type_item: profitType === PROFIT_TYPE.PRICE}" 
+                    @click="changeProfitType(PROFIT_TYPE.PRICE)">$</div>
+                <div 
+                    class="type_item" 
+                    :class="{active_type_item: profitType === PROFIT_TYPE.RATIO}"  
+                    @click="changeProfitType(PROFIT_TYPE.RATIO)">%</div>
+            </div>
+        </div>
         <div class="second_time_wrapper">
             <div 
                 v-show="TAB_TYPE.YEAR !== activeTabKey"
@@ -21,7 +33,7 @@
             </div>
             <div class="sencond_time_value" :class="getProfitClass(totalProfit)">
                 <div class="sencond_time_title">{{ timeTitle }}</div>
-                <div class="sencond_time_profit">{{ getPriceType(totalProfit) + totalProfit.toFixed(2) }}</div>
+                <div class="sencond_time_profit">{{ getPriceType(totalProfit) + totalProfit.toFixed(2) + profitSymbol }}</div>
             </div>
             <div 
                 v-show="TAB_TYPE.YEAR !== activeTabKey"
@@ -36,24 +48,32 @@
             :currentYear="currentYear" 
             :currentMonth="currentMonth"
             :profitData="profitDataListOfDay"
+            :profitType="profitType"
+            :profitSymbol="profitSymbol"
         />
         <CalendarOfWeek
             v-show="TAB_TYPE.WEEK === activeTabKey"
             :currentYear="currentYear" 
             :currentMonth="currentMonth"
             :profitData="profitDataListOfDay"
+            :profitType="profitType"
+            :profitSymbol="profitSymbol"
         />
         <CalendarOfMonth
             v-show="TAB_TYPE.MONTH === activeTabKey"
             :currentYear="currentYear" 
             :currentMonth="currentMonth"
             :profitData="profitDataListOfMonth"
+            :profitType="profitType"
+            :profitSymbol="profitSymbol"
         />
         <CalendarOfYear
             v-show="TAB_TYPE.YEAR === activeTabKey"
             :currentYear="currentYear" 
             :currentMonth="currentMonth"
             :profitData="profitDataListOfYear"
+            :profitType="profitType"
+            :profitSymbol="profitSymbol"
         />
 
     </div>
@@ -67,6 +87,7 @@ import CalendarOfMonth from './CalendarOfMonth.vue';
 import CalendarOfYear from './CalendarOfYear.vue';
 
 import { getHistoricalMonthlyProfitApi, getHistoricalDailyProfiApi, getHistoricalYearlyProfitApi } from '../../utils/api';
+import { PROFIT_TYPE } from '../../utils/constants';
 
 const TAB_TYPE = {
     DAY: 'day',
@@ -74,6 +95,7 @@ const TAB_TYPE = {
     MONTH: 'month',
     YEAR: 'year'
 }
+
 
 export default {
     components: {
@@ -91,26 +113,31 @@ export default {
             TAB_TYPE,
             profitDataListOfDay: [],
             profitDataListOfMonth: [],
-            profitDataListOfYear: []
+            profitDataListOfYear: [],
+            PROFIT_TYPE,
+            profitType: PROFIT_TYPE.PRICE
         }
     },
     computed: {
+        profitSymbol() {
+            return this.profitType === PROFIT_TYPE.PRICE ? '' : '%';
+        },
         getPriceType() {
-            return function(price) {
-                if(price > 0) {
+            return function(profit) {
+                if(profit > 0) {
                     return '+';
-                } else if(price < 0) {
+                } else if(profit < 0) {
                     return '-';
                 }
                 return '';
             }
         },
         getProfitClass() {
-            return function(price) {
+            return function(profit) {
 
-                if(price >= 0) {
+                if(profit >= 0) {
                     return 'red';
-                } else if(price < 0) {
+                } else if(profit < 0) {
                     return 'green';
                 }
                 return 'grey';
@@ -119,17 +146,25 @@ export default {
         totalProfit() {
             if(this.activeTabKey === TAB_TYPE.YEAR) {
                 return this .profitDataListOfYear.reduce((pre, item) => {
-                    
-                    return pre + item.profit;
+                    if(this.profitType === PROFIT_TYPE.PRICE) {
+                        return pre + item.profit;
+                    }
+                    return pre + item.ratio;
                 }, 0);
             }
             if(this.activeTabKey === TAB_TYPE.MONTH) {
                 return this.profitDataListOfMonth.reduce((pre, item) => {
-                    return pre + item.profit;
+                    if(this.profitType === PROFIT_TYPE.PRICE) {
+                        return pre + item.profit;
+                    }
+                    return pre + item.ratio;
                 }, 0);
             }
             return this.profitDataListOfDay.reduce((pre, item) => {
-                return pre + item.profit;
+                    if(this.profitType === PROFIT_TYPE.PRICE) {
+                        return pre + item.profit;
+                    }
+                    return pre + item.ratio;
             }, 0);
         },
         timeTitle() {
@@ -185,6 +220,9 @@ export default {
         this.initDataByTabKey(this.activeTabKey);
     },
     methods: {
+        changeProfitType(profitType) {
+            this.profitType = profitType;
+        },
         initDataByTabKey(tabKey) {
             if(tabKey === TAB_TYPE.DAY || tabKey === TAB_TYPE.WEEK) {
                 this.getDataOfDay();
@@ -319,10 +357,35 @@ export default {
 
 <style lang="scss">
 .profit_calendar {
-    height: 10.5rem;
+    height: 11.3rem;
     border-radius: 0.4rem;
     background-color: #fff;
     padding: 0.2rem;
+    .profit_type_wrapper {
+        display: flex;
+        justify-content: flex-end;
+        margin: 0.1rem 0;
+    }
+    .profit_type_switch{
+        display: flex;
+        background-color: #999;
+        border-radius: 0.1rem;
+    }
+    .type_item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        width: 1rem;
+        height: 100%;
+        font-size: 0.5rem;
+        color: #fff;
+    }
+    .active_type_item {
+        color: #367dd7;
+        background-color: #fff;
+        // border-radius: 0.5rem;
+    }
 }
 .profit_calendar .title {
     font-size: 0.4rem;
