@@ -99,8 +99,10 @@ export default {
     .week_name_item {
         display: flex;
         justify-content: center;
-        flex: 1;
+        width: 13%;
         font-size: 0.4rem;
+        margin-right: 0.1rem;
+        margin-top: 0.1rem;
     }
     .day_list_wrapper {
         display: flex;
