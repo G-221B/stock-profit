@@ -4,6 +4,9 @@
         <div class="profit_overview_wrapper">
             <ProfitOverview :profitData="profitData" />
         </div>
+        <div class="profit_table_wrapper">
+            <ProfitTable/>
+        </div>
         <div class="profit_calendar_wrapper">
             <ProfitCalendar />
         </div>
@@ -13,6 +16,7 @@
 <script>
 import ProfitOverview from "./components/ProfitOverview/ProfitOverview.vue";
 import ProfitCalendar from "./components/ProfitCalendar/ProfitCalendar.vue";
+import ProfitTable from './components/ProfitTable/ProfitTable.vue';
 
 import { getHistoricalDailyProfiApi, getHistoricalYearlyProfitApi } from "../src/utils/api";
 
@@ -21,6 +25,7 @@ export default {
     components: {
         ProfitOverview,
         ProfitCalendar,
+        ProfitTable
     },
     data() {
         return {
@@ -121,10 +126,16 @@ export default {
     top: -1rem;
     padding: 0 0.3rem;
 }
+.profit_table_wrapper {
+    z-index: 1;
+    position: relative;
+    top: -.6rem;
+    padding: 0 0.3rem;
+}
 .profit_calendar_wrapper {
     z-index: 1;
     position: relative;
-    top: -0.6rem;
+    top: -0.2rem;
     padding: 0 0.3rem;
 }
 </style>
