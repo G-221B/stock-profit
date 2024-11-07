@@ -14,16 +14,16 @@
 </template>
 
 <script>
-import { getDaysInMonth, isDateInRange, isDateOutOfTargetDay} from '../../utils/index';
+import { getDaysInMonth, isDateInRange, isDateOutOfTargetDay, getCurrentTimeInET} from '../../utils/index';
 import { PROFIT_TYPE } from '../../utils/constants';
 
 export default {
     props: {
         currentYear: {
-            default: () => new Date().getFullYear()
+            default: () => getCurrentTimeInET().getFullYear()
         },
         currentMonth: {
-            default: () => new Date().getMonth() + 1
+            default: () => getCurrentTimeInET().getMonth() + 1
         },
         profitData: {
             default: () => []

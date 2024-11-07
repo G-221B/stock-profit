@@ -11,14 +11,15 @@
 
 <script>
 import { PROFIT_TYPE } from '../../utils/constants';
+import { getCurrentTimeInET } from '../../utils/index';
 
 export default {
     props: {
         currentYear: {
-            default: () => new Date().getFullYear()
+            default: () => getCurrentTimeInET().getFullYear()
         },
         currentMonth: {
-            default: () => new Date().getMonth() + 1
+            default: () => getCurrentTimeInET().getMonth() + 1
         },
         profitData: {
             default: () => []
@@ -57,8 +58,8 @@ export default {
             }
         },  
         monthList() {
-            const nowYear = new Date().getFullYear();
-            const nowMonth = new Date().getMonth() + 1;
+            const nowYear = getCurrentTimeInET().getFullYear();
+            const nowMonth = getCurrentTimeInET().getMonth() + 1;
 
             let maxMonthSize = 12;
             const monthList = [];

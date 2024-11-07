@@ -29,6 +29,7 @@
 
 <script>
 import { getLineChartDataApi, getMarketHoursApi } from "../../utils/api";
+import { getCurrentTimeInET } from '../../utils/index';
 
 export default {
     data() {
@@ -39,9 +40,9 @@ export default {
             },
             chartTableData: [],
             profitTableTime: {
-                year: new Date().getFullYear(),
-                month: new Date().getMonth() + 1,
-                day: new Date().getDate()
+                year: getCurrentTimeInET().getFullYear(),
+                month: getCurrentTimeInET().getMonth() + 1,
+                day: getCurrentTimeInET().getDate()
             },
             chart: null,
         }

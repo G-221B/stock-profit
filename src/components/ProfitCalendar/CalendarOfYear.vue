@@ -11,14 +11,15 @@
 
 <script>
 import { PROFIT_TYPE } from '../../utils/constants';
+import { getCurrentTimeInET } from '../../utils/index';
 
 export default {
     props: {
         currentYear: {
-            default: () => new Date().getFullYear()
+            default: () => getCurrentTimeInET().getFullYear()
         },
         currentMonth: {
-            default: () => new Date().getMonth() + 1
+            default: () => getCurrentTimeInET().getMonth() + 1
         },
         profitData: {
             default: () => []
@@ -57,7 +58,7 @@ export default {
             }
         },  
         yearList() {
-            const nowYear = new Date().getFullYear();
+            const nowYear = getCurrentTimeInET().getFullYear();
             const startYear = nowYear - 5;
             const yearList = [];
 

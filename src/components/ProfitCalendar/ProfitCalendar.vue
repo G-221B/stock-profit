@@ -89,6 +89,7 @@ import CalendarOfYear from './CalendarOfYear.vue';
 
 import { getHistoricalMonthlyProfitApi, getHistoricalDailyProfiApi, getHistoricalYearlyProfitApi, getHistoricalWeeklyProfitApi } from '../../utils/api';
 import { PROFIT_TYPE } from '../../utils/constants';
+import { getCurrentTimeInET } from '../../utils/index';
 
 const TAB_TYPE = {
     DAY: 'day',
@@ -109,8 +110,8 @@ export default {
     data() {
         return {
             activeTabKey: TAB_TYPE.DAY,
-            currentYear: new Date().getFullYear(),
-            currentMonth: new Date().getMonth() + 1,
+            currentYear: getCurrentTimeInET().getFullYear(),
+            currentMonth: getCurrentTimeInET().getMonth() + 1,
             TAB_TYPE,
             profitDataListOfDay: [],
             profitDataListOfMonth: [],
@@ -199,13 +200,13 @@ export default {
             ]
         },
         disablePreBtn() {
-            const nowYear = new Date().getFullYear();
-            const nowMonth = new Date().getMonth() + 1;
+            const nowYear = getCurrentTimeInET().getFullYear();
+            const nowMonth = getCurrentTimeInET().getMonth() + 1;
             return nowYear - 1 === this.currentYear && nowMonth === this.currentMonth;
         },
         disableNextBtn() {
-            const nowYear = new Date().getFullYear();
-            const nowMonth = new Date().getMonth() + 1;
+            const nowYear = getCurrentTimeInET().getFullYear();
+            const nowMonth = getCurrentTimeInET().getMonth() + 1;
 
             if(
                 this.activeTabKey === TAB_TYPE.YEAR ||

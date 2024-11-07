@@ -36,7 +36,7 @@ export function getWeekday(year, month, day) {
 
   export function isDateInRange(year, month, startDay, endDay) {
     // 获取今天的日期
-    const today = new Date();
+    const today = getCurrentTimeInET();
   
     // 构建输入的起始日期和结束日期
     const startDate = new Date(year, month - 1, startDay); // 注意月份是从0开始的
@@ -48,7 +48,7 @@ export function getWeekday(year, month, day) {
 
   export function isDateOutOfTargetDay(year, month, day) {
     // 获取今天的日期
-    const today = new Date();
+    const today = getCurrentTimeInET();
     const targetDate = new Date(year, month - 1, day);
 
     return targetDate > today;
@@ -56,11 +56,32 @@ export function getWeekday(year, month, day) {
 
   export function isToday(year, month, day) {
     // 获取今天的日期
-    const today = new Date();
+    const today = getCurrentTimeInET();
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth() + 1; // getMonth() 返回0-11，所以加1
     const currentDay = today.getDate();
   
     // 比较传入的日期和今天的日期
     return currentYear === year && currentMonth === month && currentDay === day;
+  }
+
+  // 获取当前时间(美国时区)
+ export function getCurrentTimeInET() {
+    // 获取当前时间
+    var now = new Date();
+  
+    // 获取当前时间的时间戳（毫秒）
+    var utcTimestamp = now.getTime() + now.getTimezoneOffset() * 60000;
+  
+    // 美国东部时间与UTC的偏移量（-5小时），这里不考虑夏令时
+    var etOffset = -5 * 60 * 60 * 1000;
+  
+    // 计算美国东部时间的时间戳
+    var etTimestamp = utcTimestamp + etOffset;
+  
+    // 创建一个新的Date对象，设置为美国东部时间
+    var etTime = new Date(etTimestamp);
+  
+    // 返回美国东部时间
+    return etTime;
   }

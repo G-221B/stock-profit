@@ -19,16 +19,16 @@
 </template>
 
 <script>
-import { getWeekday, getDaysInMonth, formatPrice, isDateOutOfTargetDay, isToday } from '../../utils/index';
+import { getWeekday, getDaysInMonth, formatPrice, isDateOutOfTargetDay, isToday,getCurrentTimeInET } from '../../utils/index';
 import { PROFIT_TYPE } from '../../utils/constants';
 
 export default {
     props: {
         currentYear: {
-            default: () => new Date().getFullYear()
+            default: () => getCurrentTimeInET().getFullYear()
         },
         currentMonth: {
-            default: () => new Date().getMonth() + 1
+            default: () => getCurrentTimeInET().getMonth() + 1
         },
         profitData: {
             default: () => []
@@ -51,9 +51,9 @@ export default {
     },
     mounted() {
         this.selectTimeData = {
-            year: new Date().getFullYear(),
-            month: new Date().getMonth() + 1,
-            day: new Date().getDate()
+            year: getCurrentTimeInET().getFullYear(),
+            month: getCurrentTimeInET().getMonth() + 1,
+            day: getCurrentTimeInET().getDate()
         }
     },
     computed: {

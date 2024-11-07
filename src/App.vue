@@ -19,6 +19,7 @@ import ProfitCalendar from "./components/ProfitCalendar/ProfitCalendar.vue";
 import ProfitTable from './components/ProfitTable/ProfitTable.vue';
 
 import { getHistoricalDailyProfiApi, getHistoricalYearlyProfitApi } from "../src/utils/api";
+import { getCurrentTimeInET } from '../src/utils/index';
 
 export default {
     name: "App",
@@ -40,7 +41,7 @@ export default {
     },
     computed: {
         years() {
-            const nowYear = new Date().getFullYear();
+            const nowYear = getCurrentTimeInET().getFullYear();
             const startYear = nowYear - 5;
             const yearList = [];
             for(let i = startYear; i <= nowYear; i++) {
@@ -72,9 +73,10 @@ export default {
         },
         async getInitDataOfMonth() {
             try {
-                const nowYear = new Date().getFullYear();
-                const nowMonth = new Date().getMonth() + 1;
-                const currentDay = new Date().getDate();
+                const nowDate = getCurrentTimeInET();
+                const nowYear = nowDate.getFullYear();
+                const nowMonth = nowDate.getMonth() + 1;
+                const currentDay = nowDate.getDate();
                 const res = await getHistoricalDailyProfiApi({
                     year: nowYear,
                     month: nowMonth,
