@@ -149,7 +149,7 @@ export default {
                 },
                 time: {
                     type: 'timeCat',
-                    mask: 'MM-DD HH:mm', // 根据需要显示的时间格式来设置
+                    mask: 'HH:mm', // 根据需要显示的时间格式来设置
                     tickCount: 3,
                 },
             });
