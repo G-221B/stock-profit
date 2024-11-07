@@ -4,6 +4,7 @@ import 'normalize.css/normalize.css'
 import ToastPlugin from './utils/toastPlugin';
 
 Vue.config.productionTip = false
+Vue.prototype.$eventBus = new Vue();
 
 Vue.use(ToastPlugin);
 

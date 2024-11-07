@@ -4,7 +4,13 @@
             <div class="week_name_item" v-for="item in weekNameList" :key="item">{{ item }}</div>
         </div>
         <div class="day_list_wrapper">
-            <div class="day_item" :class="[item.hidden ? 'hidden': '' , getDayItemClass(item), item.isOutOfNow ? 'outOfNow' : '']" v-for="item in dayList" :key="item.key">
+            <div 
+                class="day_item" 
+                :class="getDayItemClass(item)" 
+                v-for="item in dayList" 
+                :key="item.key"
+                @click="changeDay(item)"
+            >
                 <div class="title">{{ item.title }}</div>
                 <div class="profit" v-if="!item.isOutOfNow">{{ getPriceType(item.profit) + formatPrice(item.profit) + profitSymbol }}</div>
             </div>
@@ -36,7 +42,18 @@ export default {
     },
     data() {
         return {
-
+            selectTimeData: {
+                year: 0,
+                month: 0,
+                day: 0
+            }
+        }
+    },
+    mounted() {
+        this.selectTimeData = {
+            year: new Date().getFullYear(),
+            month: new Date().getMonth() + 1,
+            day: new Date().getDate()
         }
     },
     computed: {
@@ -52,12 +69,24 @@ export default {
         },
         getDayItemClass() {
             return function(item) {
+                const classArray = [item.hidden ? 'hidden': '' , item.isOutOfNow ? 'outOfNow' : ''];
                 if(item.profit > 0) {
-                    return 'red';
+                    classArray.push('red')
                 } else if(item.profit < 0) {
-                    return 'green';
+                    classArray.push('green')
+                } else {
+                    classArray.push('grey')
                 }
-                return 'grey';
+
+                if(
+                    this.selectTimeData.year === this.currentYear && 
+                    this.selectTimeData.month === this.currentMonth &&
+                    this.selectTimeData.day === item.day
+                ) {
+                    classArray.push('select_day_item')
+                }
+
+                return classArray;
             }
         },  
         weekNameList() {
@@ -84,14 +113,23 @@ export default {
                     title,
                     profit: this.profitType === PROFIT_TYPE.PRICE ? (this.profitData[i]?.profit || 0) : (this.profitData[i]?.ratio || 0),
                     key: i + 1 + 'val',
-                    isOutOfNow: isDateOutOfTargetDay(this.currentYear, this.currentMonth, i+1) || isToday(this.currentYear, this.currentMonth, i+1)
+                    day: i+1,
+                    isOutOfNow: isDateOutOfTargetDay(this.currentYear, this.currentMonth, i+1)
                 })
             }
             return dayList;
         }
     },
     methods: {
-        formatPrice
+        formatPrice,
+        changeDay(item) {
+            this.selectTimeData = {
+                year: this.currentYear,
+                month: this.currentMonth,
+                day: item.day
+            }
+            this.$eventBus.$emit('changeProfitTableTime', this.selectTimeData)
+        }
     }
 }
 </script>
@@ -144,14 +182,38 @@ export default {
         &.outOfNow, &.grey {
             background-color: #f5f5f5;
         }
+        .title {
+            font-size: 0.3rem;
+            color: #333;
+            font-weight: 500;
+        }
+    }
+    .select_day_item {
+        box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+        .title {
+            color: #fff;
+        }
+        &.red{
+            background-color: #d7505a;
+            .profit {
+                color: #fff;
+            }
+        }
+        &.green{
+            background-color: #2b8971;
+            .profit {
+                color: #fff;
+            }
+        }
+        &.outOfNow, &.grey {
+            background-color: #999999;
+            .profit {
+                color: #fff;
+            }
+        }
     }
     .day_item.hidden {
         visibility: hidden;
-    }
-    .day_item .title {
-        font-size: 0.3rem;
-        color: #333;
-        font-weight: 500;
     }
     .day_item .profit {
         color: #999;

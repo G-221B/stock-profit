@@ -35,7 +35,7 @@ export default {
                 currentYear_price: 0,
                 currentYear_profit: 0,
             },
-            profitDataOfYears: []
+            profitDataOfYears: [],
         };
     },
     computed: {

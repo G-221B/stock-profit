@@ -1,6 +1,6 @@
 <template>
     <div class="profit_table">
-        <div class="title">收益曲线</div>
+        <div class="title">收益曲线（{{currentTimeStr}}）</div>
         <div class="chart_header">
             <div class="chart_item stock_profit">
                 <div class="title">当前股价</div>
@@ -38,6 +38,12 @@ export default {
                 currentProfit: 0,
             },
             chartTableData: [],
+            profitTableTime: {
+                year: new Date().getFullYear(),
+                month: new Date().getMonth() + 1,
+                day: new Date().getDate()
+            },
+            chart: null,
         }
     },
     computed: {
@@ -61,19 +67,31 @@ export default {
                 return "grey";
             };
         },
+        currentTimeStr() {
+            return `${this.profitTableTime.year}-${this.profitTableTime.month}-${this.profitTableTime.day}`
+        }
     },
     mounted() {
         this.getInitChartData();
-        
+        this.$eventBus.$on('changeProfitTableTime', (profitTableTime) => {
+            this.profitTableTime = profitTableTime;
+            this.chartData = {
+                currentStock: 0,
+                currentProfit: 0,
+            };
+            this.chartTableData = [];
+            if(this.chart) {
+                this.chart.destroy();
+            }
+            clearInterval(this.interval);
+            this.getInitChartData();
+        })
     },
     methods: {
         async getInitChartData() {
             try {
-                const nowYear = new Date().getFullYear();
-                const nowMonth = new Date().getMonth() + 1;
-                const currentDay = new Date().getDate();
                 const res = await getLineChartDataApi({
-                    target_date: `${nowYear}-${nowMonth}-${currentDay}`
+                    target_date: this.currentTimeStr
                 });
                 if (res.code === 200) {
                     this.chartTableData = res.data.map((item) => {
@@ -96,11 +114,8 @@ export default {
             // let startMarkLine = {};
             // let endMarkLine = {};
             // try {
-            //     const nowYear = new Date().getFullYear();
-            //     const nowMonth = new Date().getMonth() + 1;
-            //     const currentDay = new Date().getDate();
             //     const res = await getMarketHoursApi({
-            //         target_date: `${nowYear}-${nowMonth}-${currentDay}`
+            //         target_date: this.currentTimeStr
             //     });
             //     if(res.code === 200) {
             //         if(res.preMarket?.start) {
@@ -120,10 +135,11 @@ export default {
             const data = this.chartTableData;
             this.chartData.currentProfit = data[data.length - 1].profit;
             this.chartData.currentStock = data[data.length - 1].price;
-            var chart = new F2.Chart({
+            this.chart = new F2.Chart({
                 id: "mountNode",
                 pixelRatio: window.devicePixelRatio,
             });
+            const chart = this.chart;
             chart.source(data, {
                 price: {
                     tickCount: 5,
@@ -216,11 +232,8 @@ export default {
         },
         async getNextTimeChartData(chart) {
             try {
-                const nowYear = new Date().getFullYear();
-                const nowMonth = new Date().getMonth() + 1;
-                const currentDay = new Date().getDate();
                 const res = await getLineChartDataApi({
-                    target_date: `${nowYear}-${nowMonth}-${currentDay}`,
+                    target_date: this.currentTimeStr,
                     from_ts: this.chartTableData[this.chartTableData.length - 1].ts
                 });
                 if (res.code === 200) {
