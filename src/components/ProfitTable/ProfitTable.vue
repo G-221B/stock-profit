@@ -151,6 +151,7 @@ export default {
                     type: 'timeCat',
                     mask: 'HH:mm', // 根据需要显示的时间格式来设置
                     tickCount: 3,
+                    // ticks: [1729767600000, 1729857600000, 1729908000000]
                 },
             });
             chart.tooltip({
@@ -182,34 +183,33 @@ export default {
                     fill: "#1976fb",
                 },
             });
-            chart.axis("time", {
-                label: function label(text, index, total) {
-                    console.log('text', text)
-                    var textCfg = {};
-                    if (index === 0) {
-                        textCfg.textAlign = "left";
-                    } else if (index === total - 1) {
-                        textCfg.textAlign = "right";
-                    }
-                    return textCfg;
-                },
-                ticks: ['上午6点', '下午12点', '下午6点'] // 自定义刻度值
-            });
+            // chart.axis("time", {
+            //     label: function label(text, index, total) {
+            //         var textCfg = {};
+            //         if (index === 0) {
+            //             textCfg.textAlign = "left";
+            //         } else if (index === total - 1) {
+            //             textCfg.textAlign = "right";
+            //         }
+            //         console.log('text', text)
+            //         return textCfg;
+            //     },
+            // });
 
             // 绘制股价折线图
             chart.line().position("time*price").color("#187afb").shape("line");
             // 绘制收益折线图
             chart.line().position("time*profit").color("#f0a12c").shape("line");
 
-            // chart.guide().line({
-            //     start: [1729846800 * 1000, 'min'],
-            //     end: [1729846800 * 1000, 'max'],
-            //     lineStyle: {
-            //         lineDash: [0, 2, 2 ], // 虚线样式
-            //         stroke: '#d8505a',       // 虚线颜色
-            //         lineWidth: 1            // 虚线宽度，可选，默认为 1
-            //     }
-            // });
+            chart.guide().line({
+                start: [1729846800 * 1000, 'min'],
+                end: [1729846800 * 1000, 'max'],
+                style: {
+                    lineDash: [0,1,1], // 虚线样式
+                    stroke: '#999',       // 虚线颜色
+                    lineWidth: 1            // 虚线宽度，可选，默认为 1
+                }
+            });
             // chart.guide().line({
             //     start: [1729886400 * 1000, 'min'],
             //     end: [1729886400 * 1000, 'max'],

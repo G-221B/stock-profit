@@ -65,6 +65,46 @@ export function getHistoricalYearlyProfitApi(params) {
     }
 }
 
+
+export function getHistoricalWeeklyProfitApi(params) {
+    // return request({
+    //     method: 'get',
+    //     params,
+    //      url: '' // 待补充
+    // })
+
+    return {
+        code: 200,
+        data: [
+            {
+                title: '10.28-11.03',
+                profit: 110.00,
+                ratio: 1.2
+            },
+            {
+                title: '本周',
+                profit: 110.00,
+                ratio: 1.2
+            },
+            {
+                title: '11.11-11.17',
+                profit: 110.00,
+                ratio: 1.2
+            },
+            {
+                title: '11.18-11.24',
+                profit: 110.00,
+                ratio: 1.2
+            },
+            {
+                title: '11.25-12.01',
+                profit: 0,
+                ratio: 0
+            },
+        ]
+    }
+}
+
 export function getLineChartDataApi(params) {
     // return request({
     //     method: 'get',

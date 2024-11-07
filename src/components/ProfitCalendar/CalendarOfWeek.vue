@@ -1,9 +1,13 @@
 <template>
     <div class="calendayOfWeek">
         <div class="week_list">
-            <div class="week_item" :class="[getDayItemClass(item), item.isOutOfNow ? 'outof_item' : '']" v-for="(item,index) in weekList" :key="index + item.key">
+            <!-- <div class="week_item" :class="[getDayItemClass(item), item.isOutOfNow ? 'outof_item' : '']" v-for="(item,index) in weekList" :key="index + item.key">
                 <div class="title">{{ item.title }}</div>
                 <div class="profit" v-if="!item.isOutOfNow">{{ getPriceType(item.profit) +  item.profit.toFixed(2) + profitSymbol }}</div>
+            </div> -->
+            <div class="week_item" :class="[getDayItemClass(item), item.isOutOfNow ? 'outof_item' : '']" v-for="(item) in profitDataListOfWeek" :key="item.title">
+                <div class="title">{{ item.title }}</div>
+                <div class="profit" v-if="!item.isOutOfNow">{{ getPriceType(item.profit) +  profitStr(item).toFixed(2) + profitSymbol }}</div>
             </div>
         </div>
     </div>
@@ -24,6 +28,9 @@ export default {
         profitData: {
             default: () => []
         },
+        profitDataListOfWeek: {
+            default: () => []
+        },  
         profitType: {
             default: () => PROFIT_TYPE.PRICE
         },
@@ -35,6 +42,14 @@ export default {
         return {}
     },
     computed: {
+        profitStr() {
+            return function(item) {
+                if(this.profitType === PROFIT_TYPE.PRICE) {
+                    return item.profit;
+                }
+                return item.ratio
+            }
+        },
         getPriceType() {
             return function(price) {
                 if(price > 0) {
@@ -110,7 +125,7 @@ export default {
             }
             return weekList;
         }
-    }
+    },
 }
 </script>
 

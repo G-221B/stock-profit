@@ -56,6 +56,7 @@
             :currentYear="currentYear" 
             :currentMonth="currentMonth"
             :profitData="profitDataListOfDay"
+            :profitDataListOfWeek="profitDataListOfWeek"
             :profitType="profitType"
             :profitSymbol="profitSymbol"
         />
@@ -86,7 +87,7 @@ import CalendarOfWeek from './CalendarOfWeek.vue';
 import CalendarOfMonth from './CalendarOfMonth.vue';
 import CalendarOfYear from './CalendarOfYear.vue';
 
-import { getHistoricalMonthlyProfitApi, getHistoricalDailyProfiApi, getHistoricalYearlyProfitApi } from '../../utils/api';
+import { getHistoricalMonthlyProfitApi, getHistoricalDailyProfiApi, getHistoricalYearlyProfitApi, getHistoricalWeeklyProfitApi } from '../../utils/api';
 import { PROFIT_TYPE } from '../../utils/constants';
 
 const TAB_TYPE = {
@@ -114,6 +115,7 @@ export default {
             profitDataListOfDay: [],
             profitDataListOfMonth: [],
             profitDataListOfYear: [],
+            profitDataListOfWeek: [],
             PROFIT_TYPE,
             profitType: PROFIT_TYPE.PRICE
         }
@@ -224,11 +226,14 @@ export default {
             this.profitType = profitType;
         },
         initDataByTabKey(tabKey) {
-            if(tabKey === TAB_TYPE.DAY || tabKey === TAB_TYPE.WEEK) {
+            if(tabKey === TAB_TYPE.DAY ) {
                 this.getDataOfDay();
                 return;
             }
-            console.log('tabKey', tabKey)
+            if(tabKey === TAB_TYPE.WEEK) {
+                this.getDataOfWeek();
+                return;
+            }
             if(tabKey === TAB_TYPE.MONTH) {
                 this.getDataOfMonth();
                 return;
@@ -259,7 +264,6 @@ export default {
             }
         },
         async getDataOfMonth() {
-            console.log('hickeyyyyy')
             try {
                 const res = await getHistoricalMonthlyProfitApi({
                     year: this.currentYear
@@ -271,6 +275,25 @@ export default {
                         return item;
                     });
                     this.profitDataListOfMonth = data;
+                } else {
+                    this.$showToast();
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        async getDataOfWeek() {
+            try {
+                const res = await getHistoricalWeeklyProfitApi({
+                    year: this.currentYear
+                });
+                if(res.code === 200) {
+                    const data = res.data.map((item) => {
+                        item.profit = Number(item.profit || 0);
+                        item.ratio = Number(item.ratio || 0);
+                        return item;
+                    });
+                    this.profitDataListOfWeek = data;
                 } else {
                     this.$showToast();
                 }
